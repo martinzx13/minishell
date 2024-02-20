@@ -7,26 +7,33 @@
     3. strchr.
 */
 
-void ft_parse_handle(char * token)
+typedef enum S_TOKEN_TYPE
 {
-    char *close_quotes;
-    if (strcmp(token, "echo") == 0)
-    {
-        if ((token = strtok(NULL, "")) != NULL)
-        {
-            if (*token == '\"')
-            {
-                token++;
-                close_quotes = strchr(token, '\"');
-                if (close_quotes != NULL)
-                {
-                    *close_quotes = '\0';
-                }
-            } // check the opening quotes.
-            ft_putstr(token);
-        }
-        write(1, "\n", 1);
-    }
+    WORD,
+    PARSE_FRONT,
+    PARSE_BACK,
+    PIPE
+}   T_TOKEN_TYPE;
+
+typedef struct WORD
+{
+    T_TOKEN_TYPE type;
+    char *value;
+} T_WORD;
+
+typedef struct S_WORD_LIST
+{
+    T_WORD *word;
+    struct T_WORD_LIST *left;
+    struct T_WORD_LIST *right;
+} T_WORD_LIST;
+
+T_WORD *tokenize(char* input) {
+
+    T_WORD *tokens = malloc(3 * sizeof(T_WORD));
+    tokens[0].type = WORD;
+    tokens[0].value = strtok(input, "|");
+
 }
 void ft_create_tokens(char *line)
 {
@@ -63,7 +70,7 @@ void *ft_parse_manager(char *argvs[])
             This function will start, to handle the input. 
             1. Recieve the line read. 
         */
-        ft_process_data(line);
+        ft_create_tokens(line);
 
         free(line);
     }
